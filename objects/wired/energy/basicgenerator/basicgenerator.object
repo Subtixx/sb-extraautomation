@@ -1,0 +1,65 @@
+{
+  "objectName" : "basicgenerator",
+  "colonyTags" : ["wired"],
+  "printable" : false,
+  "rarity" : "Common",
+  "description" : "A simple generator fueled by heat from combustion.",
+  "shortdescription" : "Combustion Generator",
+  "race" : "generic",
+  "category" : "wire",
+  "objectType" : "container",
+  "price" : 200,
+
+  "breakDropOptions": [],
+
+  "inventoryIcon" : "basicgenerator.png:off",
+  "orientations" : [
+    {
+      "image" : "basicgenerator.png:off",
+      "imagePosition" : [-16, -8],
+	  
+      "metaBoundBox" : [-32, -32, 32, 32],
+      "fuelBarOffset": [-1.625, 0.375],
+
+      "spaceScan" : 0.1,
+      "anchors" : [ "bottom" ],
+      "direction" : "right",
+      "collision" : "platform"
+    }
+  ],
+
+  "scripts" : [ "/scripts/energy.lua", "basicgenerator.lua" ],
+  "scriptDelta" : 10,
+  
+  "openSounds" : [ "/sfx/objects/mannequin_open.ogg" ],
+  "closeSounds" : [ "/sfx/objects/mannequin_close.ogg" ],
+  "slotCount" : 1,
+  "uiConfig" : "/interface/scripted/basicgenerator/basicgeneratorgui.config",
+  "frameCooldown" : 5,
+  "autoCloseCooldown" : 3600,
+
+  "animation" : "basicgenerator.animation",
+  "animationParts" : {
+    "generator" : "basicgenerator.png",
+    "fuelbar" : "fuelbar.png"
+  },
+  "animationPosition" : [0, 0],
+
+  "inputNodes" : [ [-1, 0] ],
+
+  "energySendRate" : 20,
+  "energyGenerationRate" : 20,
+  "energyCapacity" : 20,
+
+  "fuelValues" : {
+      "coalore":2,
+      "uraniumore":4,
+      "uraniumrod":4,
+      "plutoniumore":6,
+      "plutoniumrod":6,
+      "solariumore":8,
+      "solariumrod":8
+  },
+  "fuelMax": 50,
+  "fuelUseRate": 0.2
+}
