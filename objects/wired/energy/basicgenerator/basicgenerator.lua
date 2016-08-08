@@ -2,41 +2,46 @@ function init(virtual)
    if virtual then return end
    energy.init()
 
+   -- Set self values
    self.fuelValues = config.getParameter("fuelValues") or {}
    self.fuelMax = config.getParameter("fuelMax") or 50
    storage.fuel = config.getParameter("initialFuel") or 0
    self.fuelUseRate = config.getParameter("fuelUseRate") or 0.2
+   self.fuelBarOffset = config.getParameter("fuelBarOffset") or {-1.625, 0.375}
 
+   -- Set config parameters (for UI)
    object.setConfigParameter("fuelMax", self.fuelMax)
+   object.setConfigParameter("energyMax", energy.capacity)
 
    object.setInteractive(not object.isInputNodeConnected(0))
-   updateAnimationState()
 
-   self.fuelBarOffset = config.getParameter("fuelBarOffset") or {-1.625, 0.375}
    --animator.translateTransformationGroup("fuelbar", self.fuelBarOffset)
 
    -- profilerApi.init()
 
+   -- Communication with the UI
    message.setHandler("toggleGenerator", toggleGenerator)
+
+   updateAnimationState()
 end
 
 function toggleGenerator()
    if not object.isInputNodeConnected(0) then
       storage.state = not storage.state
       updateAnimationState()
-   else
-      object.say("Cannot toggle, input connected!")
    end
 end
 
 function containerCallback()
-   --consumeFuel() don't.
+   -- don't consume when item is placed.
+   --consumeFuel()
 end
 
 function consumeFuel()
    if(storage.fuel >= self.fuelMax) then return end
 
-   local item = world.containerItems(entity.id())[1] -- get only first slotitem
+   local item = world.containerItems(entity.id())[1]
+
    if item then
       if self.fuelValues[item.name] and storage.fuel + self.fuelValues[item.name] <= self.fuelMax then
          local itemCount = item.count
@@ -48,7 +53,6 @@ function consumeFuel()
                itemCount = itemCount - 1
             end
          end
-         object.say("Consumed: "..item.name .. " " .. storage.fuel .. "/" .. self.fuelMax)
       end
    end
    object.setConfigParameter("initialFuel", storage.fuel)
@@ -57,7 +61,10 @@ end
 
 function die()
    local position = object.position()
-   world.spawnItem("basicgenerator", {position[1] + 2, position[2] + 1}, 1, {initialFuel=storage.fuel})
+   world.spawnItem("basicgenerator", {position[1] + 2, position[2] + 1}, 1, {
+      initialFuel=storage.fuel,
+      description=string.format(config.getParameter("fuelDescription"), math.floor(storage.fuel))
+   })
 
    energy.die()
 end
@@ -95,10 +102,6 @@ function updateAnimationState()
       animator.setAnimationState("generatorState", "off")
    end
 
-   --object.scaleGroup("fuelbar", {math.min(1, storage.fuel / self.fuelMax), 1})
-   --animator.scaleTransformationGroup("fuelbar", storage.fuel / self.fuelMax, {-0.5, 0.5})
-   --animator.transformTransformationGroup("fuelbar", storage.fuel / self.fuelMax, 0, 0, 1, 0, 0)
-
    animator.resetTransformationGroup("fuelbar")
    animator.scaleTransformationGroup("fuelbar", {math.min(1, storage.fuel / self.fuelMax), 1})
    animator.translateTransformationGroup("fuelbar", {-1.625, 0.375}) --self.fuelBarOffset) -- translate it to offset, otherwise bar moves on it's own
@@ -128,7 +131,7 @@ function onEnergySendCheck()
    end
 end
 
-function generate(dt)
+function generateEnergy(dt)
    local tickFuel = self.fuelUseRate * dt
    if storage.fuel >= tickFuel then
       storage.fuel = storage.fuel - tickFuel
@@ -147,12 +150,12 @@ end
 function update(dt)
    if storage.state then
       consumeFuel()
-
-      generate(dt)
+      generateEnergy(dt)
       updateAnimationState()
-      object.setConfigParameter("energyGeneration", energy.generationRate)
+
+      object.setConfigParameter("energy", energy.getEnergy())
    else
-      object.setConfigParameter("energyGeneration", 0)
+      object.setConfigParameter("energy", 0)
    end
 
    energy.update(dt)

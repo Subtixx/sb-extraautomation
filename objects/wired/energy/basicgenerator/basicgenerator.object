@@ -4,6 +4,7 @@
   "printable" : false,
   "rarity" : "Common",
   "description" : "A simple generator fueled by heat from combustion.",
+  "fuelDescription" : "A simple generator fueled by heat from combustion.\nHolding %d U fuel",
   "shortdescription" : "Combustion Generator",
   "race" : "generic",
   "category" : "wire",
