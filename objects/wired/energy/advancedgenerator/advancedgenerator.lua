@@ -1,48 +1,47 @@
 function init(virtual)
-  if not virtual then
-    energy.init()
-    datawire.init()
-    pipes.init({itemPipe})
-    --TODO: set up storage api
+   if virtual then return end
+   energy.init()
+   datawire.init()
+   pipes.init({itemPipe})
+   --TODO: set up storage api
 
-    entity.setInteractive(true)
+   object.setInteractive(true)
 
-    self.turbineAngle = 0
-    self.turbineSpeed = 0.2
-  end
+   self.turbineAngle = 0
+   self.turbineSpeed = 0.2
 end
 
 function onNodeConnectionChange()
-  datawire.onNodeConnectionChange()
+   datawire.onNodeConnectionChange()
 end
 
 function die()
-  energy.die()
-  --TODO: cleanup storage api
+   energy.die()
+   --TODO: cleanup storage api
 end
 
 function onInteraction(args)
-  storage.state = not storage.state
+   storage.state = not storage.state
 end
 
 --never accept energy from elsewhere
 function onEnergyNeedsCheck(energyNeeds)
-  energyNeeds[tostring(entity.id())] = 0
-  return energyNeeds
+   energyNeeds[tostring(entity.id())] = 0
+   return energyNeeds
 end
 
 function rotateTurbine()
-  self.turbineAngle = (self.turbineAngle + self.turbineSpeed) % (2 * math.pi)
-  entity.rotateGroup("turbine", self.turbineAngle)
+   self.turbineAngle = (self.turbineAngle + self.turbineSpeed) % (2 * math.pi)
+   animator.rotateGroup("turbine", self.turbineAngle)
 end
 
-function main()
-  if storage.state then
+function update(dt)
+   if storage.state then
     -- yes, it really is that easy. uses the energyGenerationRate config parameter
-    energy.generateEnergy()
+    energy.generateEnergy(dt)
     rotateTurbine()
-  end
-  energy.update()
-  datawire.update()
-  pipes.update(entity.dt())
+   end
+   energy.update(dt)
+   datawire.update(dt)
+   pipes.update(dt)
 end

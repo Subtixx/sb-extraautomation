@@ -20,7 +20,7 @@ function die()
 end
 
 function setOrientation()
-  local orientation = entity.configParameter("orientation")
+  local orientation = config.getParameter("orientation")
   local pos = entity.position()
   if orientation == "down" then
     self.checkArea = {{pos[1], pos[2] - 2}, {pos[1], pos[2] - 1}, {pos[1], pos[2]}}

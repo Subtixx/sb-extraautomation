@@ -13,8 +13,8 @@ end
 function main()
    energy.update()
    local lightLevel = onShip() and 1.0 or world.lightLevel(entity.position())
-   if lightLevel >= entity.configParameter("lightLevelThreshold") and checkSolar() then
-      local generatedEnergy = lightLevel*entity.configParameter("energyGenerationRate")*entity.dt()
+   if lightLevel >= config.getParameter("lightLevelThreshold") and checkSolar() then
+      local generatedEnergy = lightLevel*config.getParameter("energyGenerationRate")*entity.dt()
       energy.addEnergy(generatedEnergy)
       updateAnimationState()
    end
@@ -39,8 +39,8 @@ function checkSolar()
 end
 
 function clearSkiesAbove()
-  local ll = entity.toAbsolutePosition({ -2.0, 1.0 })
-  local tr = entity.toAbsolutePosition({ 2.0, 16.0 })
+  local ll = object.toAbsolutePosition({ -2.0, 1.0 })
+  local tr = object.toAbsolutePosition({ 2.0, 16.0 })
   
   local bounds = {0, 0, 0, 0}
   bounds[1] = ll[1]

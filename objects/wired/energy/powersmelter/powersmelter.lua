@@ -1,24 +1,23 @@
 function init(virtual)
-   if not virtual then
-      energy.init()
-      datawire.init()
-      pipes.init({itemPipe})
+   if virtual then return end
+   energy.init()
+   datawire.init()
+   pipes.init({itemPipe})
 
-      if storage.ore == nil then storage.ore = {} end
-      if storage.state == nil then storage.state = true end
+   if storage.ore == nil then storage.ore = {} end
+   if storage.state == nil then storage.state = true end
 
-      self.conversions = config.getParameter("smeltRecipes")
+   self.conversions = config.getParameter("smeltRecipes")
 
-      self.smeltRate = config.getParameter("smeltRate")
-      self.smeltTimer = 0
+   self.smeltRate = config.getParameter("smeltRate")
+   self.smeltTimer = 0
 
-      object.setInteractive(not object.isInputNodeConnected(0))
-   end
+   object.setInteractive(not object.isInputNodeConnected(0))
 end
 
 function die()
    energy.die()
-   ejectOre() --Temporary
+   --ejectOre() --Temporary
 end
 
 function onNodeConnectionChange()
