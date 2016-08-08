@@ -1,20 +1,19 @@
 function init(virtual)
-    if not virtual then
-        energy.init({energySendFreq = 2})
+    if virtual then return end
+    energy.init({energySendFreq = 2})
 
-        if storage.state == nil then
-           storage.state = true
-        end
-
-        updateAnimationState()
+    if storage.state == nil then
+       storage.state = true
     end
+
+    updateAnimationState()
 end
 
-function main()
-   energy.update()
+function update(dt)
+   energy.update(dt)
    local lightLevel = onShip() and 1.0 or world.lightLevel(entity.position())
    if lightLevel >= config.getParameter("lightLevelThreshold") and checkSolar() then
-      local generatedEnergy = lightLevel*config.getParameter("energyGenerationRate")*entity.dt()
+      local generatedEnergy = lightLevel*config.getParameter("energyGenerationRate")*dt
       energy.addEnergy(generatedEnergy)
       updateAnimationState()
    end
@@ -22,15 +21,16 @@ end
 
 function updateAnimationState()
    if storage.state then
-      entity.setAnimationState("solarState", "on")
+      animator.setAnimationState("solarState", "on")
    else
-      entity.setAnimationState("solarState", "off")
+      animator.setAnimationState("solarState", "off")
    end
 end
 
 function onShip()
-  local worldInfo = world.info()
-  return not worldInfo or worldInfo.id == "null"
+  --[[local worldInfo = world.universeFlags()
+  return not worldInfo or worldInfo.id == "null"]]
+  return world.threatLevel() == 0
 end
 
 -- Check requirements for solar generation
@@ -48,7 +48,7 @@ function clearSkiesAbove()
   bounds[3] = tr[1]
   bounds[4] = tr[2]
   
-  return not world.rectCollision(bounds, true)
+  return not world.rectCollision(bounds)--, {"Null", "Block", "Dynamic"})
 end
 
 --- Energy

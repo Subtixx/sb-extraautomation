@@ -15,7 +15,7 @@ function onInteraction(args)
   cycleMode()
 end
 
-function main()
+function update(dt)
   --updateRelays(storage.currentMode)
 end
 
@@ -41,5 +41,5 @@ function updateRelays(variant)
 end
 
 function updateAnimationState()
-  entity.setAnimationState("cloakState", storage.currentMode)
+  animator.setAnimationState("cloakState", storage.currentMode)
 end

@@ -1,7 +1,7 @@
 function init(virtual)
   if not virtual then
     storage.variant = storage.variant or "default"
-    entity.setAnimationState("relayState", config.getParameter("relayType").."."..storage.variant)
+    animator.setAnimationState("relayState", config.getParameter("relayType").."."..storage.variant)
     energy.init()
   end
 end
@@ -19,13 +19,13 @@ function onEnergyNeedsCheck(energyNeeds)
   return energy.energyNeedsQuery(energyNeeds)
 end
 
-function main()
-  energy.update()
+function update(dt)
+  energy.update(dt)
 end
 
 function setRelayVariant(newTag)
   storage.variant = newTag
-  entity.setAnimationState("relayState", config.getParameter("relayType").."."..storage.variant)
+  animator.setAnimationState("relayState", config.getParameter("relayType").."."..storage.variant)
 end
 
 -- this will have to wait until setGlobalTag works properly

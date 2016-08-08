@@ -27,14 +27,14 @@ function setOrientation()
   else
     self.checkArea = {{pos[1], pos[2]}, {pos[1], pos[2] + 1}, {pos[1], pos[2] + 2}}
   end
-  entity.setAnimationState("orientState", orientation)
+  animator.setAnimationState("orientState", orientation)
 end
 
 function updateAnimationState()
   if storage.lavaLevel > 0 then
-    entity.setAnimationState("lavaState", "on")
+    animator.setAnimationState("lavaState", "on")
   else
-    entity.setAnimationState("lavaState", "off")
+    animator.setAnimationState("lavaState", "off")
   end
 end
 
@@ -69,7 +69,7 @@ function onEnergyNeedsCheck(energyNeeds)
 end
 
 function generate()
-  local lavaPerTile = self.lavaConsumptionRate * entity.dt()
+  local lavaPerTile = self.lavaConsumptionRate * dt
   for i, pos in ipairs(self.checkArea) do
     if storage.lavaLevel > 0 then
       --check liquid at the given tile
@@ -101,12 +101,12 @@ function generate()
   end
 end
 
-function main()
-  pipes.update(entity.dt())
+function update(dt)
+  pipes.update(dt)
 
   pullLava()
   generate()
   updateAnimationState()
 
-  energy.update()
+  energy.update(dt)
 end
